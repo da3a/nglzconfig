@@ -1,0 +1,28 @@
+﻿<div class="panel-body">
+    <table class="table">
+        <thead>
+            <tr>
+                <td></td>
+                <td>Connection Name</td>
+                <td>Connection String</td>
+                <td>Command Timeout</td>
+                <td>Modified By</td>
+                <td style="min-width: 150px">Modified Date</td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr ng-repeat="conn in vm.application.tblApplicationConnection">
+                <td>
+                    <button ng-click="vm.editConnection(conn)"><img src="/CommonEnterprise/images/edit.gif" /></button>
+                    <button ng-click="vm.deleteConnection($index)"><img src="/CommonEnterprise/images/delete.gif" /></button>
+                </td>
+                <td>{{conn.Name}}</td>
+                <td>{{conn.ConnectionString}}</td>
+                <td>{{conn.CommandTimeout}}</td>
+                <td>{{conn.ModifiedBy}}</td>
+                <td>{{conn.ModifiedDate | date:'yyyy-MMM-dd'}}</td>
+            </tr>
+        </tbody>
+    </table>
+    <button ng-click="vm.editConnection()" class="btn btn-primary">New Connection</button>
+</div>

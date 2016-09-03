@@ -1,0 +1,57 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=9,10,chrome=1" />
+    <title>LZConfig (Angular Implenetation)</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <script src="~/Scripts/modernizr-2.6.2.js"></script>
+    <base href="@Url.Content("~")" />
+</head>
+<script>
+
+</script>
+<body ng-app="lzconfig">
+    <div class="navbar navbar-fixed-top lubrizolNavBar ">
+        <div class="container">
+            <div class="navbar-header">
+                <img id="logo" src="~/App/Assets/lubrizol-logo-white.png" role="presentation" />
+                @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>*@
+                @*@Html.ActionLink("LZConfig", "Index", "Home", new {area = ""}, new {@class = "navbar-brand"})*@
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav lubrizolNavBar">
+                    <li><a class="lubrizol-nav-header" ng-href="#application/00000000-0000-0000-0000-000000000000">Create An Application</a></li>
+                </ul>
+                <p class="nav navbar-text navbar-right">Hello, @User.Identity.Name!</p>
+            </div>
+        </div>
+    </div>
+    <div class="container body-content">
+        @RenderBody()
+        <hr />
+        <footer>
+            <p>&copy; @DateTime.Now.Year - LZConfig</p>
+        </footer>
+    </div>
+    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
+    <script src="~/scripts/angular.js"></script>
+    <script src="~/scripts/angular-resource.js"></script>
+    <script src="~/scripts/angular-route.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/scripts/angular-ui/ui-bootstrap.js"></script>
+    <script src="~/scripts/angular-ui/ui-bootstrap-tpls.js"></script>
+    <script src="~/Scripts/angular-ui-router.js"></script>
+    <script src="~/App/App.js"></script>
+    <script src="~/App/Components/Home/ApplicationsController.js"></script>
+    <script src="~/App/Components/Application/ApplicationController.js"></script>
+    <script src="~/App/Components/Variables/ApplicationVariablesController.js"></script>
+    <script src="~/App/Services/lzconfigService.js"></script>
+</body>
+</html>
