@@ -1,4 +1,4 @@
-﻿var app = angular.module("lzconfig", ["ngRoute", "ngResource","ui.router", "ui.bootstrap"]);
+﻿var app = angular.module("lzconfig", ["ngRoute", "ngResource", "ui.bootstrap"]);
 
 app.config(function ($httpProvider) {
     $httpProvider.defaults.withCredentials = true;
@@ -24,12 +24,12 @@ app.config(router);
 
 //app.config(function ($stateProvider, $urlRouterProvider) {
 
-//    $urlRouterProvider.otherwise("/main/tab1");
+//    $urlRouterProvider.otherwise("/");
 
 //    $stateProvider
-//        .state("main", { abtract: true, url: "/main", templateUrl: "main.html" })
-//            .state("main.tab1", { url: "/tab1", templateUrl: "tab1.html" })
-//            .state("main.tab2", { url: "/tab2", templateUrl: "tab2.html" })
-//            .state("main.tab3", { url: "/tab3", templateUrl: "tab3.html" });
+//        .state("main", { abtract: true, url: "/application/:ID", templateUrl: "./App/Components/Home/ApplicationsView.html" })
+//            .state("main.tab1", { url: "/tab1", templateUrl: "./app/components/application/applicationDetailView.html" })
+//            .state("main.tab2", { url: "/tab2", templateUrl: "./app/components/connections/applicationConnectionsView.html" })
+//            .state("main.tab3", { url: "/tab3", templateUrl: "./app/components/variables/applicationVariablesView.html" });
 
 //});

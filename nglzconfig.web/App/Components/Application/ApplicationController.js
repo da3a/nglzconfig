@@ -1,8 +1,10 @@
 ﻿
-var ApplicationController = function ($routeParams, $location, lzconfigService) {
+var ApplicationController = function ($routeParams, $location,  $uibModal,  lzconfigService) {
     var _this = this;
     var emptyGuid = "00000000-0000-0000-0000-000000000000";
     this.title = "Application View";
+    this.errorMessage = "There was an error!";
+
     this.tabs = [
         { title: "Application", url: "app/components/application/applicationDetailView.html"},
         { title: "Connection Strings", url: "app/components/connections/applicationConnectionsView.html" },
@@ -10,11 +12,14 @@ var ApplicationController = function ($routeParams, $location, lzconfigService) 
     ];
 
     //this.tabs = [
-    //{ heading: "Tab 1", route: "main.tab1", active: false },
-    //{ heading: "Tab 2", route: "main.tab2", active: false },
-    //{ heading: "Tab 3", route: "main.tab3", active: false },
+    //{ heading: "Application", route: "main.tab1", active: false },
+    //{ heading: "Connection Stringa", route: "main.tab2", active: false },
+    //{ heading: "Application Variables", route: "main.tab3", active: false }
     //];
 
+    //this.go = function (route) {
+    //    this.go(route);
+    //};
 
     this.currentTab = "app/components/application/applicationDetailView.html";
     this.selectedVariable = null;
@@ -31,6 +36,7 @@ var ApplicationController = function ($routeParams, $location, lzconfigService) 
             return 'display';
     }
 
+    //application 
     this.deleteApplication = function () {
         if (!confirm("Are you sure you want to delete the application?"))
             return;
@@ -66,11 +72,13 @@ var ApplicationController = function ($routeParams, $location, lzconfigService) 
             });
         };
     }
+    //application end
 
+   //variables
     this.cancelApplication = function() {
         $location.path("/");
     }
-
+    
     this.editVariable = function(variable) {
         console.log("editVariable:" + JSON.stringify(variable));
         this.selectedVariable = angular.copy(variable);
@@ -81,6 +89,28 @@ var ApplicationController = function ($routeParams, $location, lzconfigService) 
      console.log("cncelEditVariable:" + index);
     this.application.tblApplicationVariable.splice(index, 1);
     this.selected = null;
+    }
+    //variables end
+
+
+    //connections
+
+    this.editConnection = function (connection) {
+        console.log("editConnection:" + JSON.stringify(connection));
+        var modalInstance = $uibModal.open({
+            animation: true,
+            templateUrl: 'app/components/connections/applicationConnectionView.html',
+            controller: 'ApplicationConnectionController',
+            controllerAs: 'vm',
+            size: null,
+            resolve: { connection: connection }
+        }).result.then(() => { this.getApplication() });
+    }
+
+    //connections end 
+
+    handleError = function (error) {
+        _this.errorMessage = JSON.stringify(error);
     }
 
     var handleResponse = function (response) {

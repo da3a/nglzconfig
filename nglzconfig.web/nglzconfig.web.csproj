@@ -133,7 +133,9 @@
     <Content Include="App\Components\Application\ApplicationDetailView.html" />
     <Content Include="App\Components\Application\ApplicationView.html" />
     <Content Include="App\Components\Application\ApplicationController.js" />
+    <Content Include="App\Components\Connections\ApplicationConnectionController.js" />
     <Content Include="App\Components\Connections\ApplicationConnectionsView.html" />
+    <Content Include="App\Components\Connections\ApplicationConnectionView.html" />
     <Content Include="App\Components\Home\ApplicationsView.html" />
     <Content Include="App\Components\Home\ApplicationsController.js" />
     <Content Include="App\Components\Variables\ApplicationVariablesController.js" />

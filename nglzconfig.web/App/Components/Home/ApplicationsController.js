@@ -7,8 +7,12 @@
         _this.applications = response.value;
     }
 
+    handleError = function(error) {
+        _this.errorMessage = JSON.stringify(error);
+    }
+
     getApplications = function() {
-        lzconfigService.Applications().query(handleResponse);
+        lzconfigService.Applications(handleError).query(handleResponse);
     }
 
     getApplications();

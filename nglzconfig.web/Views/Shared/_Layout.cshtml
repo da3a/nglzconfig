@@ -6,7 +6,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=9,10,chrome=1" />
     <title>LZConfig (Angular Implenetation)</title>
     <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
-    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="~/Content/ui-bootstrap-csp.css" rel="stylesheet" />
     <script src="~/Scripts/modernizr-2.6.2.js"></script>
     <base href="@Url.Content("~")" />
 </head>
@@ -18,12 +19,6 @@
         <div class="container">
             <div class="navbar-header">
                 <img id="logo" src="~/App/Assets/lubrizol-logo-white.png" role="presentation" />
-                @*<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>*@
-                @*@Html.ActionLink("LZConfig", "Index", "Home", new {area = ""}, new {@class = "navbar-brand"})*@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav lubrizolNavBar">
@@ -52,6 +47,7 @@
     <script src="~/App/Components/Home/ApplicationsController.js"></script>
     <script src="~/App/Components/Application/ApplicationController.js"></script>
     <script src="~/App/Components/Variables/ApplicationVariablesController.js"></script>
+    <script src="~/App/Components/Connections/ApplicationConnectionController.js"></script>
     <script src="~/App/Services/lzconfigService.js"></script>
 </body>
 </html>

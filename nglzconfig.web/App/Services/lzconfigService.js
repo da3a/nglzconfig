@@ -6,13 +6,14 @@
 
     var lzconfigService = function($resource) {
 
-        var applications = function () {
+        var applications = function (resourceErrorHandler) {
             console.log("lzconfigService:Applications");
 
             var queryAction = {
                 method: 'GET',
                 url: _this.BASEURL + "Applications",
-                isArray: false
+                isArray: false,
+                interceptor : {responseError : resourceErrorHandler}
             };
 
             var getAction = {
