@@ -3,7 +3,7 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
     var _this = this;
     var emptyGuid = "00000000-0000-0000-0000-000000000000";
     this.title = "Application View";
-    this.errorMessage = "There was an error!";
+    this.errorMessage = "";
 
     this.tabs = [
         { title: "Application", url: "app/components/application/applicationDetailView.html"},
@@ -121,7 +121,7 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
     var getApplication = function () {
         if ($routeParams.ID !== emptyGuid) {
             console.log("Application:getApplication");
-            lzconfigService.Applications().get({ id: $routeParams.ID }, handleResponse);
+            lzconfigService.Applications(handleError).get({ id: $routeParams.ID }, handleResponse);
         }
     };
 

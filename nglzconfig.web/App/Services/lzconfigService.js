@@ -46,8 +46,23 @@
                 delete: deleteAction
             });
         }
+
+        var connectionTypes = function (resourceErrorHandler) {
+            var queryAction = {
+                method: 'GET',
+                url: _this.BASEURL + "ConnectionTypes",
+                isArray: false,
+                interceptor: { responseError: resourceErrorHandler }
+            };
+
+            return $resource(_this.BASEURL + "ConnectionTypes(:id)", null, {
+                query: queryAction
+            });
+
+        }
         return {
-            Applications : applications
+            Applications: applications,
+            ConnectionTypes : connectionTypes
         };
     }
 
