@@ -60,9 +60,40 @@
             });
 
         }
+
+        var applicationConnections = function (resourceErrorHandler) {
+
+            var createAction = {
+                method: 'POST',
+                url: _this.BASEURL + "ApplicationConnections",
+                isArray: false
+            };
+
+            var updateAction = {
+                method: 'PUT',
+                url: _this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name'" + ")",
+                params: { ID: "@ApplicationID", Name: "@Name" },
+                interceptor: { responseError: resourceErrorHandler }
+            };
+            var deleteAction = {
+                method: 'DELETE',
+                url: this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name'" + ")",
+                params: { ID: "@ApplicationID", Name: "@Name" },
+                isArray: false,
+                interceptor: { responseError: resourceErrorHandler }
+            };
+
+            return $resource(_this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name'" + ")", null, {
+                create: createAction,
+                update: updateAction,
+                delete: deleteAction
+            });
+        }
+
         return {
             Applications: applications,
-            ConnectionTypes : connectionTypes
+            ConnectionTypes: connectionTypes,
+            ApplicationConnections : applicationConnections
         };
     }
 

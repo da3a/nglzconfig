@@ -109,7 +109,7 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
 
     //connections end 
 
-    handleError = function (error) {
+    var handleError = function (error) {
         _this.errorMessage = JSON.stringify(error);
     }
 

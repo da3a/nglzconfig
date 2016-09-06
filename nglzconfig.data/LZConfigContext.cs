@@ -12,6 +12,7 @@ namespace lubrizol.nglzconfig.data
         public LZConfigContext()
             : base("name=LZConfigContext")
         {
+            this.Database.Log = x => System.Diagnostics.Debug.WriteLine(x);
         }
 
         public virtual DbSet<tblApplication> tblApplication { get; set; }

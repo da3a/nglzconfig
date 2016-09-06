@@ -40,13 +40,18 @@ namespace nglzconfig.services.web.Controllers
 
         // GET: odata/ApplicationConnections(5)
         [EnableQuery]
-        public SingleResult<tblApplicationConnection> GettblApplicationConnection([FromODataUri] Guid key)
+        [ODataRoute("ApplicationConnections(ApplicationID={applicationId},Name={name})")]
+        public SingleResult<tblApplicationConnection> GettblApplicationConnection([FromODataUri] Guid applicationId, [FromODataUri] string name)
         {
-            return SingleResult.Create(db.tblApplicationConnection.Where(tblApplicationConnection => tblApplicationConnection.ApplicationID == key));
+            var connections = db.tblApplicationConnection
+                          .Where(x => x.ApplicationID == applicationId)
+                          .Where(x => x.Name == name);
+            return SingleResult.Create(connections);
         }
 
         // PUT: odata/ApplicationConnections(5)
-        public IHttpActionResult Put([FromODataUri] Guid key, Delta<tblApplicationConnection> patch)
+        [ODataRoute("ApplicationConnections(ApplicationID={applicationId},Name={name})")]
+        public IHttpActionResult Put([FromODataUri] Guid applicationId, [FromODataUri] string name, Delta<tblApplicationConnection> patch)
         {
             Validate(patch.GetEntity());
 
@@ -55,11 +60,15 @@ namespace nglzconfig.services.web.Controllers
                 return BadRequest(ModelState);
             }
 
-            tblApplicationConnection tblApplicationConnection = db.tblApplicationConnection.Find(key);
+            tblApplicationConnection tblApplicationConnection = db.tblApplicationConnection.Find(new object[] { applicationId, name });
             if (tblApplicationConnection == null)
             {
                 return NotFound();
             }
+
+            var userName = User.Identity.Name;
+            patch.GetEntity().ModifiedBy = userName.Substring(userName.LastIndexOf(@"\") + 1);
+            patch.GetEntity().ModifiedDate = DateTime.Now;
 
             patch.Put(tblApplicationConnection);
 
@@ -69,7 +78,7 @@ namespace nglzconfig.services.web.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!tblApplicationConnectionExists(key))
+                if (!tblApplicationConnectionExists(applicationId, name))
                 {
                     return NotFound();
                 }
@@ -90,6 +99,13 @@ namespace nglzconfig.services.web.Controllers
                 return BadRequest(ModelState);
             }
 
+            var userName = User.Identity.Name;
+            tblApplicationConnection.CreatedBy = userName.Substring(userName.LastIndexOf(@"\") + 1);
+            tblApplicationConnection.CreatedDate = DateTime.Now;
+            tblApplicationConnection.ModifiedBy = tblApplicationConnection.CreatedBy;
+            tblApplicationConnection.ModifiedDate = DateTime.Now;
+
+
             db.tblApplicationConnection.Add(tblApplicationConnection);
 
             try
@@ -98,7 +114,7 @@ namespace nglzconfig.services.web.Controllers
             }
             catch (DbUpdateException)
             {
-                if (tblApplicationConnectionExists(tblApplicationConnection.ApplicationID))
+                if (tblApplicationConnectionExists(tblApplicationConnection.ApplicationID, tblApplicationConnection.Name))
                 {
                     return Conflict();
                 }
@@ -111,9 +127,9 @@ namespace nglzconfig.services.web.Controllers
             return Created(tblApplicationConnection);
         }
 
-        // PATCH: odata/ApplicationConnections(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<tblApplicationConnection> patch)
+        [ODataRoute("ApplicationConnections(ApplicationID={applicationId},Name={name})")]
+        public IHttpActionResult Patch([FromODataUri] Guid applicationId, [FromODataUri] string name, Delta<tblApplicationConnection> patch)
         {
             Validate(patch.GetEntity());
 
@@ -122,7 +138,7 @@ namespace nglzconfig.services.web.Controllers
                 return BadRequest(ModelState);
             }
 
-            tblApplicationConnection tblApplicationConnection = db.tblApplicationConnection.Find(key);
+            tblApplicationConnection tblApplicationConnection = db.tblApplicationConnection.Find(applicationId, name);
             if (tblApplicationConnection == null)
             {
                 return NotFound();
@@ -136,7 +152,7 @@ namespace nglzconfig.services.web.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!tblApplicationConnectionExists(key))
+                if (!tblApplicationConnectionExists(applicationId, name))
                 {
                     return NotFound();
                 }
@@ -150,9 +166,10 @@ namespace nglzconfig.services.web.Controllers
         }
 
         // DELETE: odata/ApplicationConnections(5)
-        public IHttpActionResult Delete([FromODataUri] Guid key)
+        [ODataRoute("ApplicationConnections(ApplicationID={applicationId},Name={name})")]
+        public IHttpActionResult Delete([FromODataUri] Guid applicationId, [FromODataUri] string name)
         {
-            tblApplicationConnection tblApplicationConnection = db.tblApplicationConnection.Find(key);
+            tblApplicationConnection tblApplicationConnection = db.tblApplicationConnection.Find(applicationId, name);
             if (tblApplicationConnection == null)
             {
                 return NotFound();
@@ -180,9 +197,9 @@ namespace nglzconfig.services.web.Controllers
             base.Dispose(disposing);
         }
 
-        private bool tblApplicationConnectionExists(Guid key)
+        private bool tblApplicationConnectionExists(Guid applicationId, string name)
         {
-            return db.tblApplicationConnection.Count(e => e.ApplicationID == key) > 0;
+            return db.tblApplicationConnection.Count(e => e.ApplicationID == applicationId && e.Name == name) > 0;
         }
     }
 }

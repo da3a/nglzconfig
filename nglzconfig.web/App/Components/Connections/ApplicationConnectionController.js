@@ -1,24 +1,41 @@
 ﻿
 var ApplicationConnectionController = function ($uibModalInstance, lzconfigService, connection) {
     var _this = this;
+    this.errorMessage = "";
     _this.connection = connection;
 
     handleError = function (error) {
         _this.errorMessage = JSON.stringify(error);
     }
 
-    var connectionTypeChange = function()
+    this.connectionTypeChange = function()
     {
         console.log("connectionTypeChange called");
     }
 
-    var saveConnection = function()
+    this.saveConnection = function()
     {
         console.log("saveConnection:" + JSON.stringify(this.connection));
+        if (_this.connection.Password != "" && _this.connection.Password != this.verifyPassword)
+            console.log("passwords set but do not verify");
+
+
+        if (_this.connection.CreatedDate == null) {
+            lzconfigService.ApplicationConnections(handleError).create({ id: connection.ApplicationId, Name:connection.Name },
+            connection);
+        } else {
+            lzconfigService.ApplicationConnections(handleError).update({ id: connection.ApplicationId, Name: connection.Name },
+            connection);
+        };
+
     }
 
-    var cancel = function () {
+    this.cancel = function () {
         $uibModalInstance.dismiss("cancel");
+    }
+
+    var handleError = function (error) {
+        _this.errorMessage = JSON.stringify(error);
     }
 
     var handleResponse = function (response) {
