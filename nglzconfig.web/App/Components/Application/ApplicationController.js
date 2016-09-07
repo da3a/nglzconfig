@@ -96,7 +96,23 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
     //connections
 
     this.editConnection = function (connection) {
-        console.log("editConnection:" + JSON.stringify(connection));
+        if (connection == null)
+            connection = {
+                ApplicationID: _this.application.ID,
+                Name: "",
+                ConnectionString: "",
+                VirtualConnectionString: "",
+                Password: null,
+                CommandTimeout: null,
+                ProviderName : null,
+                CreatedDate : new Date(),
+                CreatedBy : "",
+                ModifiedDate : new Date(),
+                ModifiedBy: ""
+            }
+        else
+            console.log("editConnection:" + JSON.stringify(connection));
+
         var modalInstance = $uibModal.open({
             animation: true,
             templateUrl: 'app/components/connections/applicationConnectionView.html',

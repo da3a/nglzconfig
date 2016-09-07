@@ -67,7 +67,7 @@ namespace nglzconfig.services.web.Controllers
             }
 
             var userName = User.Identity.Name;
-            patch.GetEntity().ModifiedBy = userName.Substring(userName.LastIndexOf(@"\") + 1);
+            patch.GetEntity().ModifiedBy = userName == string.Empty ? "user" : userName;
             patch.GetEntity().ModifiedDate = DateTime.Now;
 
             patch.Put(tblApplicationConnection);
