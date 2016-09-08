@@ -101,8 +101,13 @@ namespace nglzconfig.services.web.Controllers
 
             var userName = User.Identity.Name;
             tblApplicationConnection.CreatedBy = userName.Substring(userName.LastIndexOf(@"\") + 1);
+            if (String.IsNullOrEmpty(tblApplicationConnection.CreatedBy))
+                 tblApplicationConnection.CreatedBy = "user";
+
             tblApplicationConnection.CreatedDate = DateTime.Now;
             tblApplicationConnection.ModifiedBy = tblApplicationConnection.CreatedBy;
+            if (String.IsNullOrEmpty(tblApplicationConnection.ModifiedBy))
+                tblApplicationConnection.ModifiedBy = "user";
             tblApplicationConnection.ModifiedDate = DateTime.Now;
 
 

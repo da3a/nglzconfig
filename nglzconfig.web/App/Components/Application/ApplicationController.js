@@ -51,6 +51,7 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
             return 'edit';
         else
             return 'display';
+
     }
 
     //application 
@@ -103,12 +104,42 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
 
     this.cancelEditVariable = function(index)
     {
-     console.log("cncelEditVariable:" + index);
-    this.application.tblApplicationVariable.splice(index, 1);
-    this.selected = null;
+     console.log("cancelEditVariable:" + index);
+    //this.application.tblApplicationVariable.splice(index, 1);
+    this.selectedVariable = null;
     }
-    //variables end
 
+    this.saveVariable = function(variable)
+    {
+        console.log("saveVariable:" + JSON.stringify(variable));
+        if (variable.CreatedDate == null)
+        {
+            _this.connection.CreatedDate = new Date();
+            _this.connection.CreatedBy = "user";
+            _this.connection.ModifiedDate = new Date();
+            _this.connection.ModifiedBy = "user";
+            lzconfigService.ApplicationVariables(handleError).create({ id: variable.ApplicationId, Name: variable.Name },variable);
+        }
+        else
+        {
+            lzconfigService.ApplicationVariables(handleError).update({ id: variable.ApplicationId, Name: variable.Name }, variable);
+        }
+        this.selectedVariable = null;
+    }
+
+    this.deleteVariable = function(index)
+    {
+        console.log("deleteVariable:" + index);
+        if (!confirm("Are you sure you want to delte the variable?"))
+            return;
+
+        var variable = _this.application.tblApplicationVariable[index];
+        console.log("deleteVariable" + JSON.stringify(variable));
+        lzconfigService.ApplicationVAriables(handleError).delete(variable);
+        _this.application.tblApplicationVariable.splice(index, 1);
+    }
+
+    //variables end
 
     //connections
 

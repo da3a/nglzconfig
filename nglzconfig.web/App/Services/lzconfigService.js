@@ -61,6 +61,34 @@
 
         }
 
+        var applicationVariables = function(resourceErrorHandler)
+        {
+            var createAction = {
+                method: 'POST',
+                url: _this.BASEURL + "ApplicationVariables",
+                isArray: false
+            };
+
+            var updateAction = {
+                method: 'PUT',
+                url: _this.BASEURL + "ApplicationVariables(ApplicationID=:ID,Name=':Name')",
+                params: { ID: "@ApplicationID", Name: "@Name" },
+                interceptor: { responseError: resourceErrorHandler }
+            };
+            var deleteAction = {
+                method: 'DELETE',
+                url: _this.BASEURL + "ApplicationConnections(ApplicationID=:ApplicationID,Name=':Name')",
+                isArray: false,
+                interceptor: { responseError: resourceErrorHandler }
+            };
+
+            return $resource(_this.BASEURL + "ApplicationVariables(ApplicationID=:ID,Name=':Name')", null, {
+                create: createAction,
+                update: updateAction,
+                delete: deleteAction
+            });
+
+        }
         var applicationConnections = function (resourceErrorHandler) {
 
             var createAction = {
@@ -92,6 +120,7 @@
         return {
             Applications: applications,
             ConnectionTypes: connectionTypes,
+            ApplicationVariables : applicationVariables,
             ApplicationConnections : applicationConnections
         };
     }

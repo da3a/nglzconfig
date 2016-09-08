@@ -1,4 +1,6 @@
-﻿using System;
+﻿using lubrizol.nglzconfig.data;
+using lubrizol.nglzconfig.entities;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
@@ -11,8 +13,7 @@ using System.Web.ModelBinding;
 using System.Web.OData;
 using System.Web.OData.Query;
 using System.Web.OData.Routing;
-using lubrizol.nglzconfig.data;
-using lubrizol.nglzconfig.entities;
+
 
 namespace nglzconfig.services.web.Controllers
 {
@@ -21,7 +22,7 @@ namespace nglzconfig.services.web.Controllers
 
     using System.Web.OData.Builder;
     using System.Web.OData.Extensions;
-    using lubrizol.nglzconfig.entities;
+    using Lubrizol.LZConfig.Entities;
     ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
     builder.EntitySet<tblApplicationVariable>("ApplicationVariables");
     builder.EntitySet<tblApplication>("tblApplication"); 
@@ -40,13 +41,18 @@ namespace nglzconfig.services.web.Controllers
 
         // GET: odata/ApplicationVariables(5)
         [EnableQuery]
-        public SingleResult<tblApplicationVariable> GettblApplicationVariable([FromODataUri] Guid key)
+        [ODataRoute("ApplicationVariables(ApplicationID={applicationId},Name={name})")]
+        public SingleResult<tblApplicationVariable> GettblApplicationVariable([FromODataUri] Guid applicationId, [FromODataUri] string name)
         {
-            return SingleResult.Create(db.tblApplicationVariable.Where(tblApplicationVariable => tblApplicationVariable.ApplicationID == key));
+            var variables = db.tblApplicationVariable
+                .Where(tblApplicationVariable => tblApplicationVariable.ApplicationID == applicationId)
+                .Where(tblApplicationVariable => tblApplicationVariable.Name == name);
+            return SingleResult.Create(variables);
         }
 
         // PUT: odata/ApplicationVariables(5)
-        public IHttpActionResult Put([FromODataUri] Guid key, Delta<tblApplicationVariable> patch)
+        [ODataRoute("ApplicationVariables(ApplicationID={applicationId},Name={name})")]
+        public IHttpActionResult Put([FromODataUri] Guid applicationId, [FromODataUri] string name, Delta<tblApplicationVariable> patch)
         {
             Validate(patch.GetEntity());
 
@@ -55,11 +61,15 @@ namespace nglzconfig.services.web.Controllers
                 return BadRequest(ModelState);
             }
 
-            tblApplicationVariable tblApplicationVariable = db.tblApplicationVariable.Find(key);
+            tblApplicationVariable tblApplicationVariable = db.tblApplicationVariable.Find(new object[] { applicationId, name });
             if (tblApplicationVariable == null)
             {
                 return NotFound();
             }
+            var userName = User.Identity.Name;
+            patch.GetEntity().ModifiedBy = userName == string.Empty ? "user" : userName;
+
+            patch.GetEntity().ModifiedDate = DateTime.Now;
 
             patch.Put(tblApplicationVariable);
 
@@ -69,7 +79,7 @@ namespace nglzconfig.services.web.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!tblApplicationVariableExists(key))
+                if (!tblApplicationVariableExists(applicationId, name))
                 {
                     return NotFound();
                 }
@@ -83,12 +93,19 @@ namespace nglzconfig.services.web.Controllers
         }
 
         // POST: odata/ApplicationVariables
-        public IHttpActionResult Post(tblApplicationVariable tblApplicationVariable)
+
+        public IHttpActionResult Post([FromBody] tblApplicationVariable tblApplicationVariable)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
+            var userName = User.Identity.Name;
+            tblApplicationVariable.CreatedBy = userName.Substring(userName.LastIndexOf(@"\") + 1);
+            tblApplicationVariable.CreatedDate = DateTime.Now;
+            tblApplicationVariable.ModifiedBy = tblApplicationVariable.CreatedBy;
+            tblApplicationVariable.ModifiedDate = DateTime.Now;
+
 
             db.tblApplicationVariable.Add(tblApplicationVariable);
 
@@ -98,7 +115,7 @@ namespace nglzconfig.services.web.Controllers
             }
             catch (DbUpdateException)
             {
-                if (tblApplicationVariableExists(tblApplicationVariable.ApplicationID))
+                if (tblApplicationVariableExists(tblApplicationVariable.ApplicationID, tblApplicationVariable.Name))
                 {
                     return Conflict();
                 }
@@ -113,7 +130,8 @@ namespace nglzconfig.services.web.Controllers
 
         // PATCH: odata/ApplicationVariables(5)
         [AcceptVerbs("PATCH", "MERGE")]
-        public IHttpActionResult Patch([FromODataUri] Guid key, Delta<tblApplicationVariable> patch)
+        [ODataRoute("ApplicationVariables(ApplicationID={applicationId},Name={name})")]
+        public IHttpActionResult Patch([FromODataUri] Guid applicationId, [FromODataUri] string name, Delta<tblApplicationVariable> patch)
         {
             Validate(patch.GetEntity());
 
@@ -122,7 +140,7 @@ namespace nglzconfig.services.web.Controllers
                 return BadRequest(ModelState);
             }
 
-            tblApplicationVariable tblApplicationVariable = db.tblApplicationVariable.Find(key);
+            tblApplicationVariable tblApplicationVariable = db.tblApplicationVariable.Find(new object[] { applicationId, name });
             if (tblApplicationVariable == null)
             {
                 return NotFound();
@@ -136,7 +154,7 @@ namespace nglzconfig.services.web.Controllers
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!tblApplicationVariableExists(key))
+                if (!tblApplicationVariableExists(applicationId, name))
                 {
                     return NotFound();
                 }
@@ -150,9 +168,10 @@ namespace nglzconfig.services.web.Controllers
         }
 
         // DELETE: odata/ApplicationVariables(5)
-        public IHttpActionResult Delete([FromODataUri] Guid key)
+        [ODataRoute("ApplicationVariables(ApplicationID={applicationId},Name={name})")]
+        public IHttpActionResult Delete([FromODataUri] Guid applicationId, [FromODataUri] string name)
         {
-            tblApplicationVariable tblApplicationVariable = db.tblApplicationVariable.Find(key);
+            tblApplicationVariable tblApplicationVariable = db.tblApplicationVariable.Find(new object[] { applicationId, name });
             if (tblApplicationVariable == null)
             {
                 return NotFound();
@@ -180,9 +199,9 @@ namespace nglzconfig.services.web.Controllers
             base.Dispose(disposing);
         }
 
-        private bool tblApplicationVariableExists(Guid key)
+        private bool tblApplicationVariableExists(Guid applicationId, string name)
         {
-            return db.tblApplicationVariable.Count(e => e.ApplicationID == key) > 0;
+            return db.tblApplicationVariable.Count(e => e.ApplicationID == applicationId && e.Name == name) > 0;
         }
     }
 }
