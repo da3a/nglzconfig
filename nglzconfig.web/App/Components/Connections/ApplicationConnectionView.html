@@ -156,14 +156,14 @@
         <div class="form-group">
             <label class="col-lg-4 control-label">Modified By</label>
             <div class="col-lg-8">
-                {{vm.connection.ModifiedBy }} on {{vm.connection.ModifiedDate | date:'yyyy-MMM-dd' }}
+                {{vm.connection.ModifiedBy }} <span ng-show="vm.connection.CreatedBy">on</span> {{vm.connection.ModifiedDate | date:'yyyy-MMM-dd' }}
             </div>
         </div>
 
         <div class="form-group">
             <label class="col-lg-4 control-label">Created By</label>
             <div class="col-lg-8">
-                {{vm.connection.CreatedBy }} on {{vm.connection.CreatedDate |  date:'yyyy-MMM-dd' }}
+                {{vm.connection.CreatedBy }} <span ng-show="vm.connection.CreatedBy">on</span> {{vm.connection.CreatedDate |  date:'yyyy-MMM-dd' }}
             </div>
         </div>
 

@@ -71,19 +71,18 @@
 
             var updateAction = {
                 method: 'PUT',
-                url: _this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name'" + ")",
+                url: _this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name')",
                 params: { ID: "@ApplicationID", Name: "@Name" },
                 interceptor: { responseError: resourceErrorHandler }
             };
             var deleteAction = {
                 method: 'DELETE',
-                url: this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name'" + ")",
-                params: { ID: "@ApplicationID", Name: "@Name" },
+                url: _this.BASEURL + "ApplicationConnections(ApplicationID=:ApplicationID,Name=':Name')",
                 isArray: false,
                 interceptor: { responseError: resourceErrorHandler }
             };
 
-            return $resource(_this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name'" + ")", null, {
+            return $resource(_this.BASEURL + "ApplicationConnections(ApplicationID=:ID,Name=':Name')", null, {
                 create: createAction,
                 update: updateAction,
                 delete: deleteAction

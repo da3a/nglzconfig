@@ -27,6 +27,23 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
         _this.currentTab = tab.url;
     }
 
+
+    var handleError = function (error) {
+        _this.errorMessage = JSON.stringify(error);
+    }
+
+    var handleResponse = function (response) {
+        console.log("Application Response Received");
+        _this.application = response;
+    }
+
+    var getApplication = function () {
+        if ($routeParams.ID !== emptyGuid) {
+            console.log("Application:getApplication");
+            lzconfigService.Applications(handleError).get({ id: $routeParams.ID }, handleResponse);
+        }
+    };
+
     this.getTemplate = function(variable) {
         if (!_this.selectedVariable)
             return 'display';
@@ -42,7 +59,7 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
             return;
         console.log("Application:deleteApplication:" + JSON.stringify(_this.application));
 
-        lzconfigService.Applications().delete({ id: this.application.ID });
+        lzconfigService.Applications(handleError).delete({ id: this.application.ID });
         $location.path("/applicationList");
     }
 
@@ -105,9 +122,9 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
                 Password: null,
                 CommandTimeout: null,
                 ProviderName : null,
-                CreatedDate : new Date(),
+                CreatedDate : null,
                 CreatedBy : "",
-                ModifiedDate : new Date(),
+                ModifiedDate :null,
                 ModifiedBy: ""
             }
         else
@@ -120,26 +137,19 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
             controllerAs: 'vm',
             size: null,
             resolve: { connection: connection }
-        }).result.then(() => { this.getApplication() });
+        }).result.then(() => {getApplication()});
     }
 
+    this.deleteConnection = function(index) {
+        if (!confirm("Are you sure you want to delte the connection?"))
+            return;
+
+        var connection = _this.application.tblApplicationConnection[index];
+        console.log("deleteConnection" + JSON.stringify(connection));
+        lzconfigService.ApplicationConnections(handleError).delete(connection);
+        _this.application.tblApplicationConnection.splice(index, 1);
+    }
     //connections end 
-
-    var handleError = function (error) {
-        _this.errorMessage = JSON.stringify(error);
-    }
-
-    var handleResponse = function (response) {
-        console.log("Application Response Received");
-        _this.application = response;
-    }
-
-    var getApplication = function () {
-        if ($routeParams.ID !== emptyGuid) {
-            console.log("Application:getApplication");
-            lzconfigService.Applications(handleError).get({ id: $routeParams.ID }, handleResponse);
-        }
-    };
 
     getApplication();
 }
