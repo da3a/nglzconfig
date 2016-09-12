@@ -4,6 +4,7 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
     var emptyGuid = "00000000-0000-0000-0000-000000000000";
     this.title = "Application View";
     this.errorMessage = "";
+    this.variableType = "text";
 
     this.tabs = [
         { title: "Application", url: "app/components/application/applicationDetailView.html"},
@@ -114,15 +115,13 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
         console.log("saveVariable:" + JSON.stringify(variable));
         if (variable.CreatedDate == null)
         {
-            _this.connection.CreatedDate = new Date();
-            _this.connection.CreatedBy = "user";
-            _this.connection.ModifiedDate = new Date();
-            _this.connection.ModifiedBy = "user";
-            lzconfigService.ApplicationVariables(handleError).create({ id: variable.ApplicationId, Name: variable.Name },variable);
+            variable.CreatedDate = new Date();
+            variable.ModifiedDate = new Date();
+            lzconfigService.ApplicationVariables(handleError).create({ id: variable.ApplicationID, Name: variable.Name },variable);
         }
         else
         {
-            lzconfigService.ApplicationVariables(handleError).update({ id: variable.ApplicationId, Name: variable.Name }, variable);
+            lzconfigService.ApplicationVariables(handleError).update({ id: variable.ApplicationID, Name: variable.Name }, variable);
         }
         this.selectedVariable = null;
     }
@@ -135,8 +134,18 @@ var ApplicationController = function ($routeParams, $location,  $uibModal,  lzco
 
         var variable = _this.application.tblApplicationVariable[index];
         console.log("deleteVariable" + JSON.stringify(variable));
-        lzconfigService.ApplicationVAriables(handleError).delete(variable);
+        lzconfigService.ApplicationVariables(handleError).delete(variable);
         _this.application.tblApplicationVariable.splice(index, 1);
+    }
+
+    this.newVariable = function(inputType) {
+        console.log("newVariable called");
+        _this.variableType = inputType;
+        var variable = { ApplicationID: _this.application.ApplicationID, Name: "", Value:"", Secure:  inputType === "password", CreatedDate: null, CreatedBy:"user",ModifiedDate: null, ModifiedBy:"user" }
+        console.log("newVariable:" + JSON.stringify(variable));
+        _this.application.tblApplicationVariable.push(variable);
+        _this.selectedVariable = variable;
+
     }
 
     //variables end

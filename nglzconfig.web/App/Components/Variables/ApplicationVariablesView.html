@@ -29,7 +29,7 @@
     </script>
 
     <script type="text/ng-template" id="edit">
-        <td>{{var.Name}}</td>
+        <td><input type="text" ng-model="var.Name" ng-readonly="vm.CreatedDate" /></td>
         <td><input type={{vm.variableType}} ng-model="var.Value" /></td>
         <td>
             <button ng-click="vm.saveVariable(var)">Save</button>

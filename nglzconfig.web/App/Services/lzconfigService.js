@@ -77,7 +77,7 @@
             };
             var deleteAction = {
                 method: 'DELETE',
-                url: _this.BASEURL + "ApplicationConnections(ApplicationID=:ApplicationID,Name=':Name')",
+                url: _this.BASEURL + "ApplicationVariables(ApplicationID=:ApplicationID,Name=':Name')",
                 isArray: false,
                 interceptor: { responseError: resourceErrorHandler }
             };
